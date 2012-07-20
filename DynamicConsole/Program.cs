@@ -31,13 +31,14 @@ namespace DynamicConsole
             myexpando.Address = "967 Dorothy St";
             myexpando.Address.City = "Regina";
 
-            //by default, Console.WriteLine will ask for an "object", the ToString will just return "[DynamicConsole.OurOwnExpando]"
-            //casting it specifically will trigger a call to TryConvert
+            //by default, Console.WriteLine will ask for an "object", the ToString will just return 
+            //"[DynamicConsole.OurOwnExpando]" - casting it specifically will trigger a call to TryConvert
             Console.WriteLine((string)myexpando.Address);
             Console.WriteLine((string)myexpando.Address.City);
             Console.WriteLine((string)myexpando.Name);
 
-            dynamic context = new DynamicDatabase(new SqlConnection("Data Source=localhost;Initial Catalog=Northwind;Integrated Security=True"));
+            dynamic context = new DynamicDatabase(new SqlConnection(
+                "Data Source=localhost;Initial Catalog=Northwind;Integrated Security=True"));
             dynamic result = context.Customers.SelectAll();
             Console.WriteLine("Found " + result.Count + " rows");
             foreach(var row in result)
@@ -156,12 +157,11 @@ namespace DynamicConsole
         {
             //our stored procedures in the DB take the format "TableName_Operation"
             //binder.Name represents the name of the method we're trying to call
-            var cmd = new SqlCommand(string.Format("{0}_{1}", _table, binder.Name), _connection) { CommandType = CommandType.StoredProcedure };
+            var cmd = new SqlCommand(string.Format("{0}_{1}", _table, binder.Name), _connection) 
+                { CommandType = CommandType.StoredProcedure };
 
             //if the caller passed arguments into the dynamic method, figure out the names of those arguments
             //note this only works with named parameters, i.e. SomeMethod(argName: value, argName2: value)
-
-            //using argument names
             //for (var i = 0; i < args.Length; i++)
             //{
             //    var name = binder.CallInfo.ArgumentNames[i];
